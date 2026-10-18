@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17112b">
+<title>Ruang Cerita 💜</title>
+<style>
+:root{color-scheme:dark;--bg:#100d1d;--card:#1d1731;--accent:#c4a7ff;--pink:#f2a8d8;--text:#f7f2ff;--muted:#c0b7d4}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);background:radial-gradient(ellipse at top,#39265e 0%,#17112b 45%,#100d1d 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+main{width:min(100%,520px)}.card{background:#1b1630eF;border:1px solid #ffffff1c;border-radius:24px;padding:26px;box-shadow:0 20px 70px #0005}header{text-align:center;margin-bottom:24px}.logo{font-size:42px}h1{margin:8px 0;font-size:30px}p{color:var(--muted);line-height:1.6}.tag{display:inline-block;background:#ffffff10;border:1px solid #ffffff18;border-radius:999px;padding:6px 12px;font-size:12px;color:var(--pink)}
+label{display:block;margin:14px 0 8px;font-weight:600}input,textarea{width:100%;border:1px solid #ffffff25;background:#100d1d;color:var(--text);border-radius:14px;padding:14px;font:inherit;outline:none}input:focus,textarea:focus{border-color:var(--accent)}textarea{min-height:145px;resize:vertical}button{border:0;border-radius:14px;padding:14px 18px;font:inherit;font-weight:700;cursor:pointer;background:linear-gradient(100deg,#b69aff,#f0a8d6);color:#211433;width:100%;margin-top:16px}button.secondary{background:#ffffff12;color:var(--text);border:1px solid #ffffff20}.hidden{display:none!important}.reply{margin-top:20px;background:#ffffff0b;border:1px solid #ffffff1b;border-left:4px solid var(--pink);border-radius:14px;padding:16px;line-height:1.7;white-space:pre-wrap}.small{font-size:12px;color:#a99fbe;margin-top:18px}.actions{display:flex;gap:10px}.actions button{flex:1}.error{color:#ffb6c7;font-size:13px;margin-top:10px;min-height:18px}
+</style>
+</head>
+<body>
+<main>
+<section class="card" id="welcome">
+<header><div class="logo">💜</div><span class="tag">TEMPAT AMAN UNTUK BERCERITA</span><h1>Ruang Cerita</h1><p>Kamu nggak harus menyimpan semuanya sendirian. Tulis ceritamu, pelan-pelan saja.</p></header>
+<label for="nickname">Nama panggilan (opsional)</label><input id="nickname" maxlength="30" placeholder="Mau dipanggil apa?">
+<button id="start">Mulai bercerita →</button>
+<p class="small">Privasi: ini demo sederhana. Cerita tidak dikirim ke server, tetapi diproses di browser pada perangkat ini. Hindari menulis kata sandi atau informasi pribadi.</p>
+</section>
+<section class="card hidden" id="journal">
+<header><div class="logo">🌙</div><h1 id="hello">Aku mendengarkan</h1><p>Tarik napas sebentar. Kamu boleh menulis sebanyak yang kamu mau.</p></header>
+<label for="story">Apa yang sedang kamu rasakan?</label><textarea id="story" maxlength="5000" placeholder="Aku ingin cerita tentang..."></textarea>
+<div class="error" id="error" aria-live="polite"></div>
+<button id="send">Kirim ceritaku</button>
+<div id="answer" class="reply hidden" aria-live="polite"></div>
+<div class="actions"><button class="secondary" id="again">Tulis cerita lain</button><button class="secondary" id="back">Kembali</button></div>
+<p class="small">Balasan dibuat otomatis berdasarkan kata kunci, bukan oleh manusia atau AI langsung. Kalau kamu sedang tidak aman, segera hubungi orang dewasa tepercaya atau layanan darurat setempat.</p>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+$('start').addEventListener('click',()=>{
+ const name=$('nickname').value.trim();
+ $('hello').textContent=name?`Aku mendengarkan, ${name} 💜`:'Aku mendengarkan 💜';
+ $('welcome').classList.add('hidden');$('journal').classList.remove('hidden');$('story').focus();
+});
+function makeReply(text){
+ const s=text.toLowerCase();
+ if(/sedih|nangis|menangis|kecewa|hancur|kehilangan/.test(s)) return 'Terima kasih sudah mau bercerita. Kedengarannya kamu sedang melalui sesuatu yang berat. Kamu tidak harus menyelesaikan semuanya sekaligus. Coba beri dirimu waktu dan lakukan satu hal kecil yang membuatmu merasa lebih tenang. Kalau kamu nyaman, apa bagian yang paling berat buatmu saat ini?';
+ if(/teman|sahabat|dijauhi|dibully|diejek|dibenci/.test(s)) return 'Masalah dengan teman bisa terasa menyakitkan, apalagi kalau kamu merasa tidak dimengerti. Perasaanmu layak didengarkan. Kamu boleh menjaga jarak dan mencari orang yang membuatmu merasa aman. Adakah seseorang yang kamu percaya untuk diajak bicara?';
+ if(/keluarga|orang tua|ayah|ibu|rumah/.test(s)) return 'Terima kasih sudah berbagi tentang keluargamu. Situasi keluarga kadang rumit, dan kamu tidak harus memikul semuanya sendirian. Jika memungkinkan, bicaralah saat suasana tenang dengan orang dewasa yang kamu percaya. Apa yang paling kamu harapkan berubah dari situasi ini?';
+ if(/sekolah|ujian|nilai|tugas|guru|belajar/.test(s)) return 'Tekanan sekolah bisa menumpuk. Cobalah pecah masalahnya menjadi satu langkah kecil yang bisa dilakukan hari ini. Nilai atau satu kesalahan tidak menentukan seluruh dirimu. Bagian mana yang paling membuatmu tertekan sekarang?';
+ if(/marah|kesal|emosi|benci/.test(s)) return 'Sepertinya ada sesuatu yang benar-benar mengganggumu. Tidak apa-apa untuk merasakan marah; yang penting beri diri waktu sebelum mengambil tindakan. Coba tarik napas perlahan dan ceritakan apa yang terjadi, jika kamu siap.';
+ if(/takut|cemas|khawatir|panik|gelisah/.test(s)) return 'Rasa takut dan khawatir bisa terasa melelahkan. Coba lihat sekeliling dan sebutkan tiga hal yang kamu lihat, lalu tarik napas pelan. Kamu tidak perlu memikirkan semua kemungkinan sekaligus. Apa yang paling kamu khawatirkan saat ini?';
+ if(/cinta|pacar|putus|rindu|kangen/.test(s)) return 'Perasaan tentang hubungan bisa campur aduk, dan itu wajar. Beri dirimu waktu untuk memahami apa yang kamu butuhkan, tanpa memaksa diri segera mendapat jawaban. Apa yang paling ingin kamu ungkapkan tentang situasi ini?';
+ return 'Terima kasih sudah mempercayakan ceritamu di sini. Aku belum tentu memahami semuanya, tetapi perasaanmu penting dan kamu layak didengarkan. Cobalah ambil satu langkah kecil yang terasa aman untukmu. Kalau kamu mau, ceritakan sedikit lagi: bagian mana yang paling ingin kamu keluarkan dari pikiranmu?';
+}
+$('send').addEventListener('click',()=>{
+ const text=$('story').value.trim();
+ if(!text){$('error').textContent='Tulis sedikit ceritamu dulu, ya.';return}
+ $('error').textContent='';$('answer').textContent=makeReply(text);$('answer').classList.remove('hidden');
+});
+$('again').addEventListener('click',()=>{$('story').value='';$('answer').classList.add('hidden');$('error').textContent='';$('story').focus()});
+$('back').addEventListener('click',()=>{$('journal').classList.add('hidden');$('welcome').classList.remove('hidden')});
+</script>
+</body>
+</html>
